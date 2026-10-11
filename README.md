@@ -7,38 +7,53 @@ Detail Preview of the entire app
   <img src="https://github.com/user-attachments/assets/14a8b905-464b-48a8-abc3-6e02353d0883" width="1000">
 </p>
 
+## Architecture Overview
 
-𝗕𝗿𝗲𝗮𝗸𝗻𝗼𝘄𝗻 𝗼𝗳 𝗲𝗮𝗰𝗵 𝗠𝗶𝗰𝗿𝗼𝘀𝗲𝗿𝘃𝗶𝗰𝗲
-𝟭) 𝗨𝘀𝗲𝗿-𝗦𝗲𝗿𝘃𝗶𝗱𝗲
-Handel's the user data and login event
+Client → **API Gateway** → Eureka lookup → target microservice
 
-𝟮)𝗟𝗼𝗰𝗮𝘁𝗶𝗼𝗻 𝗦𝗲𝗿𝘃𝗶𝗰𝗲
+### 1. User Service
+Handles registration, login and authentication. Uses Spring Security with JWT and BCrypt password hashing (cost factor 12).
 
-- Stores the user's current latitude and longitude.
+### 2. Location Service
+- Stores each user's current latitude and longitude in MySQL.
 - Indexes user locations in Redis using GeoHash.
-- Performs radius-based searches (e.g., within 10 km).
+- Performs radius-based searches (e.g. within 10 km).
 - Returns the list of nearby user IDs to the Orchestration Service.
-- Does not cache search results; caching is handled by the Orchestration Service.
+- Does not cache search results. Caching is handled by the Orchestration Service.
 
-𝟯) 𝗢𝗿𝗰𝗵𝗲𝘀𝘁𝗿𝗮𝘁𝗶𝗼𝗻-𝗦𝗲𝗿𝘃𝗶𝗰𝗲
+### 3. Orchestration Service
+Coordinates the discovery and swipe flow using the API Composition pattern. It calls the Location, User and Match services through Feign clients (discovered via Eureka) and combines the results into one response. Caches feeds in Redis lists to avoid repeated calls.
 
-𝟰) 𝗣𝗮𝗶𝗿𝗶𝗻𝗴-𝗦𝗲𝗿𝘃𝗶𝗰𝗲
+### 4. Pairing Service
+[CHECK: consumes match events from Kafka, saves them to MySQL, and publishes a notification event]
 
-𝟱) 𝗠𝗮𝘁𝗰𝗵-𝗦𝗲𝗿𝘃𝗶𝗰𝗲
-𝟲) 𝗡𝗼𝘁𝗶𝗳𝗶𝗰𝗮𝘁𝗶𝗼𝗻-𝗦𝗲𝗿𝘃𝗶𝗰𝗲 
+### 5. Match Service
+Records swipes in a MySQL table with a composite key (swiper + swiped), so duplicate swipes can't happen. Publishes swipe/match events to Kafka. Uses @Async and @Transactional for non-blocking writes.
 
-𝟳) 𝗞𝗮𝗳𝗸𝗮-𝗖𝗼𝗻𝘁𝗮𝗶𝗻𝗲𝗿
-shared network across all containers
+### 6. Notification Service
+Consumes Kafka events and sends email through AWS SES v2. Uses @RetryableTopic (4 attempts) with a dead-letter topic for failed messages.
 
-𝟴) 𝗘𝘂𝗿𝗲𝗸𝗮-𝗦𝗲𝗿𝘃𝗶𝗰𝗲
+### 7. API Gateway
+Built on Spring Cloud Gateway (WebFlux). Validates JWTs and routes requests to the right service through Eureka.
 
-9) DISTRIBUTED SQL
-10) DOCKER SERVICE
+### 8. Eureka Service
+Service registry. Every service registers here, so none needs hardcoded addresses.
 
-11) role of redis
+### 9. Kafka Container
+Runs Kafka in KRaft mode (no Zookeeper). Carries events between services so they stay decoupled.
 
-12) role of AWS SES
+### 10. Distributed SQL
+[CHECK: e.g. "Each service owns its own MySQL schema (database-per-service), so services never share tables."]
 
+### 11. Docker
+Every service runs in a container, and Docker Compose starts the whole system on one shared network, so containers reach each other by service name.
+
+## Role of Redis
+- **Geo-indexing:** the Location Service stores coordinates in Redis GEO for fast radius queries.
+- **Caching:** the Orchestration Service caches feed results in Redis lists, which cut response times sharply.
+
+## Role of AWS SES
+The Notification Service uses SES v2 to send emails (such as match notifications) asynchronously, triggered by Kafka events rather than blocking the request.
 explanation of each part
 
 
