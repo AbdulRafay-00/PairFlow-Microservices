@@ -53,13 +53,22 @@ Every service runs in a container, and Docker Compose starts the whole system on
 - **Caching:** the Orchestration Service caches feed results in Redis lists, which cut response times sharply.
 
 ## Role of AWS SES
-The Notification Service uses SES v2 to send emails (such as match notifications) asynchronously, triggered by Kafka events rather than blocking the request.
-explanation of each part
+The Notification Service uses **AWS SES v2** to send emails (such as match notifications) asynchronously. Sending is triggered by Kafka events rather than blocking the request, so the swipe and match flow stays fast even if email delivery is slow.
 
+### How it works
+1. **Event published:** when a match happens, an event is published to a Kafka topic.
+2. **Event consumed:** the Notification Service picks up the event from Kafka, independently of the request that caused it.
+3. **Email sent:** the Notification Service builds the email and sends it through SES v2.
+4. **Delivered:** the user receives the notification in their inbox (see the output below).
 
-OUTPUT
-Swiper
-img placeholder
+### Output
+
+Proof of a notification email received through SES:
+
+<p align="center">
+  <img width="420" alt="Match notification email received via AWS SES" src="https://github.com/user-attachments/assets/69f286d2-80af-4123-b321-80ae17570e47" />
+</p>
+<p align="center"><em>Match notification email delivered via AWS SES v2</em></p>
 
 # Load Testing
 
