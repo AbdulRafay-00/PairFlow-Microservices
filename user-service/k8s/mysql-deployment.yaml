@@ -32,3 +32,26 @@ spec:
         - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tinder-user-service-mysql
+spec:
+  selector:
+    app: tinder-user-service-mysql-pod
+  ports:
+    - port: 3306
+      targetPort: 3306
