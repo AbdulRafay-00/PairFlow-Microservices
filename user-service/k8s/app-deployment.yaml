@@ -55,3 +55,17 @@ spec:
             - name: SPRING_APPLICATION_NAME
               value: user-service
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-app-service
+spec:
+  type: NodePort
+  selector:
+    app: tinder-user-service-app-pod
+  ports:
+
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30000
