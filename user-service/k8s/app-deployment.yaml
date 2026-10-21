@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-app-deployment
+  labels:
+    app: tinder-user-service-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tinder-user-service-app-pod
+  template:
+    metadata:
+      labels:
+        app: tinder-user-service-app-pod
+    spec:
+      containers:
+        - name: tinder-user-service-app
+          image: rafayabdul00/user-service-repo:1.0.22
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://tinder-user-service-mysql:3306/tinder_user_service
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DB_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DB_PASSWORD
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: com.mysql.cj.jdbc.Driver
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_JPA_SHOW_SQL
+              value: "true"
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
+              value: "true"
+            - name: SPRING_JPA_DATABASE_PLATFORM
+              value: org.hibernate.dialect.MySQLDialect
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: JWT_SECRET_KEY
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: tinder-kafka:9092
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              # value: http://tinder-service-registry:8761/eureka/
+              value: "false"
+            - name: SPRING_APPLICATION_NAME
+              value: user-service
+---
