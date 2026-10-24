@@ -42,5 +42,5 @@ jobs:
         context: ./Service-Registry
         push: true
         tags: |
-          ${{ vars.DOCKERHUB_USERNAME }}/service-registry-repo:latest
-          ${{ vars.DOCKERHUB_USERNAME }}/service-registry-repo:1.0.${{ github.run_number }}
+          ${{ vars.DOCKERHUB_USERNAME }}/pairflow-service-registry-repo:latest
+          ${{ vars.DOCKERHUB_USERNAME }}/pairflow-service-registry-repo:1.0.${{ github.run_number }}
