@@ -19,3 +19,18 @@ spec:
         image: rafayabdul00/pairflow-service-registry-repo:latest
         ports:
         - containerPort: 8761
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: Eurika-service-registry-service
+spec:
+  type: NodePort
+  selector:
+    app: pairflow=service-registry-pod
+  ports:
+
+    - protocol: TCP
+      port: 8761
+      targetPort: 8761
+      nodePort: 30001
