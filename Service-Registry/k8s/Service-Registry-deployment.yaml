@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-registry-deployment
+  labels:
+    app: service-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pairflow-service-registry-pod
+  template:
+    metadata:
+      labels:
+        app: pairflow-service-registry-pod
+    spec:
+      containers:
+      - name: pairflow-service-registry
+        image: rafayabdul00/pairflow-service-registry-repo:latest
+        ports:
+        - containerPort: 8761
