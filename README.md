@@ -1,3 +1,65 @@
+
+# PairFlow: Docker Version
+
+> **Archived branch.** This branch preserves the original Docker-based architecture
+> of the project. The current version, deployed on Kubernetes (Minikube), lives on `main`.
+
+## Overview
+
+A microservices-based backend where every service is containerized and runs
+independently, following a loosely coupled architecture. All containers
+communicate over a dedicated Docker network.
+
+## Architecture
+
+- **Containerized microservices:** each service has its own Dockerfile and runs
+  in its own container, so it can be built, deployed, and scaled independently.
+- **Custom Docker network:** all containers join one user-defined bridge network
+  and reach each other by container/service name (for example
+  `http://tinder-service-registry:8761`), so no hardcoded IPs are needed.
+- **Service discovery:** a Eureka server registers all services at runtime.
+- **Messaging:** Kafka handles asynchronous communication between services.
+- **Services:** `<user-service>`, `<service-2>`, `<service-3>`, ...
+
+## Networking
+
+| Traffic | How it works |
+|---|---|
+| Container to container | Direct over the Docker network, using container names. No published ports needed. |
+| Outside to container (browser, Postman) | Requires port publishing (`ports: "8080:8080"`). Without it, nothing outside Docker can reach the container. |
+
+The project runs on **WSL2** with Docker. Published ports are reachable from
+Windows via `localhost:<port>`.
+
+## Fault tolerance and reliability
+
+- `<restart policies so crashed containers come back automatically>`
+- `<health checks / depends_on so services start in the right order>`
+- `<loose coupling: one service failing doesn't take down the others>`
+- `<Kafka buffering messages while a consumer is down>`
+
+## Tech stack
+
+Java, Spring Boot, Spring Cloud (Eureka), Kafka, `<database>`, Docker, Docker Compose, WSL2
+
+## Running it
+
+```bash
+git clone <repo-url>
+cd <repo>
+git checkout docker-compose
+docker compose up --build
+```
+
+- Eureka dashboard: http://localhost:8761
+- `<other service URLs>`
+
+## Why this branch exists
+
+This is the first version of the system, built before moving to Kubernetes. It's
+kept as a reference for the Docker networking approach. See `main` for the
+Kubernetes version.
+
 Detail Preview of the entire app 
 𝗦𝗬𝗦𝗧𝗘𝗠 𝗗𝗘𝗦𝗜𝗚𝗡 𝗗𝗜𝗔𝗚𝗥𝗔𝗠 𝗛𝗔𝗡𝗗 𝗗𝗥𝗔𝗪𝗡
 
