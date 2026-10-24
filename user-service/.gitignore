@@ -34,6 +34,6 @@ build/
 
 ### Sensitive application config ###
 # Local Spring Boot properties
-application.properties
+# application.properties
 # Environment variables file
 .env

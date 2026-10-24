@@ -5,4 +5,8 @@
 *.log
 .env
 application.properties
+<<<<<<< HEAD
 README.md
+=======
+README.md
+>>>>>>> feature-cicd-error-fix-suite

@@ -22,6 +22,7 @@
 
 //     private static final List<String> PUBLIC_PATHS = List.of(
 //             "/auth/login",
+//             "/login/portal",
 //             "/auth/register",
 //             "/actuator/health"
 //     );
@@ -117,7 +118,8 @@ public class JwtAuthFilter implements WebFilter {
     private static final List<String> PUBLIC_PATHS = List.of(
         
             "/login/portal",      // ✅ CHANGED: your actual login path
-            "/signup/portal"
+            "/auth/register",
+            "/actuator/health"
     );
 
     // ❌ REMOVED: @Value and loginRedirectUrl from constructor

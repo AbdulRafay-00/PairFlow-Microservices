@@ -45,6 +45,7 @@ services:
       SECRET_KEY: ${JWT_SECRET_KEY}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: Tinder-kafka:9092
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://tinder-service-registry:8761/eureka/
+      SPRING_APPLICATION_NAME: user-service
     networks:
       - tinder-network
 
