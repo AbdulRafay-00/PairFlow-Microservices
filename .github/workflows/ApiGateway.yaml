@@ -4,8 +4,8 @@ on:
   push:
     branches: ["feature-k8s-deployment"]
     paths:
-      - 'Api-Gateway/**'
-      - '.github/workflows/api-gateway/ApiGateway.yaml'
+      - 'API-Gateway/**'
+      - '.github/workflows/ApiGateway.yaml'
 
 jobs:
   build:
