@@ -50,8 +50,8 @@ spec:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: tinder-kafka:9092
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              # value: http://tinder-service-registry:8761/eureka/
-              value: "false"
+              value: http://eurika-service-registry-service:8761/eureka/
+              # value: "false"
             - name: SPRING_APPLICATION_NAME
               value: user-service
 ---

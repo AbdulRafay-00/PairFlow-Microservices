@@ -23,11 +23,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: Eurika-service-registry-service
+  name: eurika-service-registry-service
 spec:
   type: NodePort
   selector:
-    app: pairflow=service-registry-pod
+    app: pairflow-service-registry-pod
   ports:
 
     - protocol: TCP

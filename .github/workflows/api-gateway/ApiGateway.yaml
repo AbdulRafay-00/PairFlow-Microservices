@@ -1,0 +1,41 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: ["feature-k8s-deployment"]
+    paths:
+      - 'Api-Gateway/**'
+      - '.github/workflows/api-gateway/ApiGateway.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          maven-cache: maven
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+        working-directory: Api-Gateway
+
+      - name: Login to docker hub
+        if: github.event_name == 'push'
+        uses: docker/Login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: build and push docker image
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v7
+        with:
+          context: Api-Gateway
+          push: true
+          tags: |
+            ${{ vars.DOCKERHUB_USERNAME }}/pairflow-api-gateway-repo:latest
+            ${{ vars.DOCKERHUB_USERNAME }}/pairflow-api-gateway-repo:1.0.${{ github.run_number }}
