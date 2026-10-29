@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Api-Gateway-app-deployment
+  name: api-gateway-app-deployment
   labels:
     app: pairflow-api-gateway-app
 spec:
@@ -16,22 +16,35 @@ spec:
     spec:
       containers:
         - name: pairflow-api-gateway-app-container
-          image: rafayabdul00/pairflow-api-gateway-repo:1.0.4
+          image: rafayabdul00/pairflow-api-gateway-repo:1.0.5
           ports:
             - containerPort: 8089
           env:
             - name: SECRETKEY
               valueFrom:
                 secretKeyRef:
-                  name: api-gateway-secret
+                  name: api-gateway-secrets
                   key: JWT_SECRET_KEY
             - name: LOGIN_URL
               valueFrom:
                 secretKeyRef:
-                  name: api-gateway-secret
+                  name: api-gateway-secrets
                   key: LOGIN_URL
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: http://tinder-service-registry:8761/eureka/
 
 ---
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-app-service
+spec:
+  type: NodePort
+  selector:
+    app: pairflow-api-gateway-app-pod
+  ports:
+    - protocol: TCP
+      port: 8089
+      targetPort: 8089
+      nodePort: 30002
