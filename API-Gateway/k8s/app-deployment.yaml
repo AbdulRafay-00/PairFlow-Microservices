@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
         - name: pairflow-api-gateway-app-container
-          image: rafayabdul00/pairflow-api-gateway-repo:1.0.5
+          image: rafayabdul00/pairflow-api-gateway-repo:1.0.6
           ports:
             - containerPort: 8089
           env:
-            - name: SECRETKEY
+            - name: JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: api-gateway-secrets
@@ -31,7 +31,10 @@ spec:
                   name: api-gateway-secrets
                   key: LOGIN_URL
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: http://tinder-service-registry:8761/eureka/
+              value: http://eurika-service-registry-service:8761/eureka/
+
+            - name: SERVER_PORT
+              value: "8089"
 
 ---
 
