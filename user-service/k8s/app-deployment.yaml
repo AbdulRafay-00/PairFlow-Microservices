@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tinder-user-service-app
-          image: rafayabdul00/user-service-repo:1.0.22
+          image: rafayabdul00/user-service-repo:1.0.3
           ports:
             - containerPort: 8080
           env:
@@ -51,6 +51,8 @@ spec:
               value: tinder-kafka:9092
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: http://eurika-service-registry-service:8761/eureka/
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: user-service-app-service
               # value: "false"
             - name: SPRING_APPLICATION_NAME
               value: user-service
