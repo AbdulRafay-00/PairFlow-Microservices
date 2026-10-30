@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: pairflow-api-gateway-app-container
-          image: rafayabdul00/pairflow-api-gateway-repo:1.0.6
+          image: rafayabdul00/pairflow-api-gateway-repo:1.0.7
           ports:
             - containerPort: 8089
           env:
