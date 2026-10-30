@@ -124,6 +124,7 @@ public class JwtAuthFilter implements WebFilter {
             "/login/portal",
             "/user-service/login/portal",
             "/signup/service",
+            "/user-service/signup/service",
             "/auth/register",
             "/actuator/health"
     );
