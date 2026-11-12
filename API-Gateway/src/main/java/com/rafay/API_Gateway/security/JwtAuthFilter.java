@@ -121,9 +121,7 @@ public class JwtAuthFilter implements WebFilter {
     private final JwtUtil jwtUtil;
 
     private static final List<String> PUBLIC_PATHS = List.of(
-            "/login/portal",
             "/user-service/login/portal",
-            "/signup/service",
             "/user-service/signup/service",
             "/auth/register",
             "/actuator/health"

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tinder-user-service-app
-          image: rafayabdul00/user-service-repo:1.0.3
+          image: rafayabdul00/user-service-repo:1.0.4
           ports:
             - containerPort: 8080
           env:
